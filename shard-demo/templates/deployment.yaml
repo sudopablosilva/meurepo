@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shard-demo
+  labels:
+    app: shard-demo
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: shard-demo
+  template:
+    metadata:
+      labels:
+        app: shard-demo
+      annotations:
+        # Using the original specific template
+        config.original/eksasgmax: "{{ include "shard-demo.eksasgmax" .Values.shardingValues }}"
+        
+        # Using the new generic template for multiple values
+        config.generic/eksasgmax: "{{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "eksasgmax" "defaultValue" "10") }}"
+        config.generic/eksasgmin: "{{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "eksasgmin" "defaultValue" "1") }}"
+        config.generic/eksasgdesired: "{{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "eksasgdesired" "defaultValue" "5") }}"
+        config.generic/instanceType: "{{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "instanceType" "defaultValue" "t3.micro") }}"
+    spec:
+      containers:
+      - name: nginx
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: 80
+        env:
+        - name: SHARD_NAME
+          value: "{{ .Values.shardingValues.shard }}"
+        - name: EKS_ASG_MAX
+          value: "{{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "eksasgmax" "defaultValue" "10") }}"
+        - name: EKS_ASG_MIN
+          value: "{{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "eksasgmin" "defaultValue" "1") }}"
+        - name: INSTANCE_TYPE
+          value: "{{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "instanceType" "defaultValue" "t3.micro") }}"

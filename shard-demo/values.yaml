@@ -1,0 +1,28 @@
+# Shard configuration for testing
+shardingValues:
+  shard: "prod-us-east-1"
+  shardMapping:
+    - shard: "dev-us-west-2"
+      eksasgmax: "5"
+      eksasgmin: "1"
+      eksasgdesired: "2"
+      instanceType: "t3.small"
+    - shard: "prod-us-east-1"
+      eksasgmax: "20"
+      eksasgmin: "3"
+      eksasgdesired: "10"
+      instanceType: "m5.large"
+    - shard: "prod-eu-west-1"
+      eksasgmax: "15"
+      eksasgmin: "2"
+      eksasgdesired: "8"
+      instanceType: "m5.medium"
+
+# Standard Helm values
+replicaCount: 1
+image:
+  repository: nginx
+  tag: "1.16.0"
+service:
+  type: ClusterIP
+  port: 80

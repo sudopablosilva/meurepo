@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shard-demo-config
+  labels:
+    app: shard-demo
+data:
+  # Current shard being used
+  current-shard: "{{ .Values.shardingValues.shard }}"
+  
+  # EKS Auto Scaling Group configuration
+  eks-asg-max: "{{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "eksasgmax" "defaultValue" "10") }}"
+  eks-asg-min: "{{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "eksasgmin" "defaultValue" "1") }}"
+  eks-asg-desired: "{{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "eksasgdesired" "defaultValue" "5") }}"
+  
+  # Instance configuration
+  instance-type: "{{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "instanceType" "defaultValue" "t3.micro") }}"
+  
+  # Example of a field that doesn't exist (should return default)
+  custom-field: "{{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "nonExistentField" "defaultValue" "default-value") }}"
+  
+  # Configuration summary
+  config-summary: |
+    Shard: {{ .Values.shardingValues.shard }}
+    Max Size: {{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "eksasgmax" "defaultValue" "10") }}
+    Min Size: {{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "eksasgmin" "defaultValue" "1") }}
+    Desired: {{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "eksasgdesired" "defaultValue" "5") }}
+    Instance: {{ include "shard-demo.getShardValue" (dict "context" .Values.shardingValues "fieldName" "instanceType" "defaultValue" "t3.micro") }}
