@@ -1,0 +1,36 @@
+name: Deploy to Environments
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy-dev:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Development
+        run: echo "Deploying to development..."
+
+  deploy-staging:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment: staging
+    needs: deploy-dev
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Staging
+        run: echo "Deploying to staging..."
+
+  deploy-production:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Production
+        run: echo "Deploying to production..."
