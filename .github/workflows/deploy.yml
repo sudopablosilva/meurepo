@@ -14,7 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Deploy to Development
-        run: echo "Deploying to development..."
+        run: echo "Deploying to $MY_ENV..."
+        env:
+          MY_ENV: ${{ env.ENVIRONMENT }}
 
   deploy-staging:
     if: github.ref == 'refs/heads/develop'
@@ -24,7 +26,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Deploy to Staging
-        run: echo "Deploying to staging..."
+        run: echo "Deploying to $MY_ENV..."
+        env:
+          MY_ENV: ${{ env.ENVIRONMENT }}
 
   deploy-production:
     if: github.ref == 'refs/heads/main'
@@ -33,4 +37,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Deploy to Production
-        run: echo "Deploying to production..."
+        run: echo "Deploying to $MY_ENV..."
+        env:
+          MY_ENV: ${{ env.ENVIRONMENT }}
