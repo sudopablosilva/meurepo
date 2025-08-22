@@ -16,7 +16,7 @@ jobs:
       - name: Deploy to Development
         run: echo "Deploying to $MY_ENV..."
         env:
-          MY_ENV: ${{ env.ENVIRONMENT }}
+          MY_ENV: ${{ vars.ENVIRONMENT }}
 
   deploy-staging:
     if: github.ref == 'refs/heads/develop'
@@ -28,7 +28,7 @@ jobs:
       - name: Deploy to Staging
         run: echo "Deploying to $MY_ENV..."
         env:
-          MY_ENV: ${{ env.ENVIRONMENT }}
+          MY_ENV: ${{ vars.ENVIRONMENT }}
 
   deploy-production:
     if: github.ref == 'refs/heads/main'
@@ -39,4 +39,4 @@ jobs:
       - name: Deploy to Production
         run: echo "Deploying to $MY_ENV..."
         env:
-          MY_ENV: ${{ env.ENVIRONMENT }}
+          MY_ENV: ${{ vars.ENVIRONMENT }}
